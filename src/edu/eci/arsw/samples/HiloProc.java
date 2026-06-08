@@ -1,23 +1,26 @@
 package edu.eci.arsw.samples;
 
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 public class HiloProc extends Thread{
 
 	int waitPeriod=0;
 	int idHilo=0;
 	long resultado=0;
+	CountDownLatch latch; 
+
+    public HiloProc(int id, CountDownLatch latch) { 
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        waitPeriod = Math.abs(new Random(System.currentTimeMillis()).nextInt() % 5000);
+        idHilo = id;
+        this.latch = latch; 
+    }
 	
-	public HiloProc(int id){
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		waitPeriod=Math.abs(new Random(System.currentTimeMillis()).nextInt()%5000);
-		idHilo=id;
-	}
 	
 	public void run(){
 		int numit=10;
@@ -31,6 +34,7 @@ public class HiloProc extends Thread{
 			}
 		}
 		resultado=System.currentTimeMillis()-startTime;
+		latch.countDown(); 
 	}
 	
 	
